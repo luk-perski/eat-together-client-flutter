@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jwtapp/api_client/api_client.dart';
-import 'package:jwtapp/main.dart';
-import 'package:jwtapp/model/account_data.dart';
-import 'package:jwtapp/model/add_account_data.dart';
-import 'package:jwtapp/model/model.dart';
-import 'package:jwtapp/utils/string_consts.dart';
+import 'package:eat_together/api_client/api_client.dart';
+import 'package:eat_together/main.dart';
+import 'package:eat_together/model/account_data.dart';
+import 'package:eat_together/model/add_account_data.dart';
+import 'package:eat_together/model/model.dart';
+import 'package:eat_together/utils/string_consts.dart';
 
 class RegisterPage extends StatefulWidget {
   @override

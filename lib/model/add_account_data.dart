@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:jwtapp/model/account_data.dart';
-import 'package:jwtapp/model/model.dart';
+import 'package:eat_together/model/account_data.dart';
+import 'package:eat_together/model/model.dart';
 
 part 'AddAccountData.g.dart';
 

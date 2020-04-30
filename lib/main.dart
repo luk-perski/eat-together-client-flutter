@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jwtapp/utils/string_consts.dart';
-import 'package:jwtapp/view/add_event.dart';
+import 'package:eat_together/utils/string_consts.dart';
+import 'package:eat_together/view/add_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'view/login.dart';
@@ -30,7 +30,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-//    checkLoginStatus();
+    checkLoginStatus();
   }
 
   checkLoginStatus() async {
@@ -51,6 +51,7 @@ class _MainPageState extends State<MainPage> {
           FlatButton(
             onPressed: () {
               sharedPreferences.clear();
+//              sharedPreferences.commit();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage()),

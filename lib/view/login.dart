@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jwtapp/api_client/account_api_client.dart';
-import 'package:jwtapp/view/register.dart';
+import 'package:eat_together/api_client/account_api_client.dart';
+import 'package:eat_together/view/register.dart';
 
 import '../main.dart';
 import '../utils/string_consts.dart';
