@@ -35,14 +35,16 @@ class _RegisterPage extends State<RegisterPage> {
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(20.0),
                     children: <Widget>[
-                      headerSection(),
-                      textSection(),
-                      buttonRegisterSection(),
+                      _headerSection(),
+                      _textSection(),
+                      _buttonRegisterSection(),
                     ],
-                  )));
+                  )
+        )
+    );
   }
 
-  Container headerSection() {
+  Container _headerSection() {
     return Container(
       margin: EdgeInsets.only(top: 50.0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
@@ -52,7 +54,7 @@ class _RegisterPage extends State<RegisterPage> {
     );
   }
 
-  Container textSection() {
+  Container _textSection() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: Column(
@@ -132,20 +134,20 @@ class _RegisterPage extends State<RegisterPage> {
     );
   }
 
-  Container buttonRegisterSection() {
+  Container _buttonRegisterSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
-      child: MaterialButton(
+      child: RaisedButton(
         onPressed: emailController.text == "" || passwordController.text == ""
             ? null
             : () {
                 setState(() {
                   _isLoading = true;
                 });
-                register();
+                _register();
               },
         elevation: 0.0,
         color: Theme.of(context).accentColor,
@@ -157,7 +159,7 @@ class _RegisterPage extends State<RegisterPage> {
     );
   }
 
-  register() async {
+  _register() async {
     var accountData = AccountData(
         email: emailController.text, password: passwordController.text);
     var userData = UserData(

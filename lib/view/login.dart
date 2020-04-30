@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
-      child: MaterialButton(
+      child: RaisedButton(
         onPressed: emailController.text == "" || passwordController.text == ""
             ? null
             : () {
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Text(
           "Don't have an account?",
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+//        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
