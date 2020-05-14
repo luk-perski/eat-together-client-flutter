@@ -1,9 +1,11 @@
+import 'package:eat_together/model/account_data.dart';
+import 'package:eat_together/repository/account_repository.dart';
+import 'package:eat_together/view/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:eat_together/api_client/account_api_client.dart';
-import 'package:eat_together/view/register.dart';
 
 import '../main.dart';
+import '../utils/api_utils.dart';
 import '../utils/string_consts.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +16,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -22,41 +27,25 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Login'),
       ),
-      body: Center(
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(20.0),
-                children: <Widget>[
-                  headerSection(),
-                  textSection(),
-                  buttonSignInSection(),
-                  buttonSignUpSection(),
-                ],
-              ),
-      ),
+      body: Builder(builder: (BuildContext context) {
+        return Center(
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : ListView(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(20.0),
+                    children: <Widget>[
+                      headerSection(),
+                      textSection(),
+                      buttonSignInSection(context),
+                      buttonSignUpSection(),
+                    ],
+                  ));
+      }),
     );
   }
 
-  signIn() {
-    AccountApiClient()
-        .signIn(emailController.text, passwordController.text)
-        .then((value) => {
-              setState(() {
-                _isLoading = false;
-              }),
-              if (value)
-                {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => MainPage()),
-                      (Route<dynamic> route) => false)
-                }
-            });
-  }
-
-  Container buttonSignInSection() {
+  Container buttonSignInSection(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
@@ -69,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   _isLoading = true;
                 });
-                signIn();
+                _signIn(context);
               },
         elevation: 0.0,
         color: Theme.of(context).accentColor,
@@ -98,9 +87,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
 
   Container textSection() {
     return Container(
@@ -147,5 +133,21 @@ class _LoginPageState extends State<LoginPage> {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold)),
     );
+  }
+
+  _signIn(BuildContext context) async {
+    var accountData = AccountData(
+        email: emailController.text, password: passwordController.text);
+    var result = await AccountRepository().signIn(accountData);
+    setState(() {
+      _isLoading = false;
+    });
+    if (result) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => MainPage()),
+          (Route<dynamic> route) => false);
+    } else {
+      showError(context, "Login failed.");
+    }
   }
 }

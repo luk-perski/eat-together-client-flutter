@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'AccountData.g.dart';
+part 'account_data.g.dart';
 
 @JsonSerializable()
 class AccountData {
@@ -12,23 +12,6 @@ class AccountData {
 
   AccountData(
       {this.id, this.eventHistory, this.password, this.email, this.userGroups});
-
-//  factory AccountData.fromJson(Map<String, dynamic> json){
-//    return AccountData(
-//      id: json['id'],
-//      eventHistory: json['eventHistory'],
-//      password: json['password'],
-//      email: json['email'],
-//      userGroups: json['userGroups']
-//    );
-//  }
-
-//  Map<String, String> toMap(){
-//    return{
-//      'password' : password,
-//      'email' : email
-//    };
-//  }
 
   factory AccountData.fromJson(Map<String, dynamic> json) =>
       _$AccountDataFromJson(json);

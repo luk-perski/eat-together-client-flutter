@@ -1,18 +1,27 @@
 import 'dart:async';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
-Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-const String _storageKeyMobileToken = "token";
+import './prefs_utils.dart' as prefs;
+
+const String urlBase = "http://192.168.1.16:2501";
+const String serverApi = "/api/v1/";
 
 Future<String> _getMobileToken() async {
-  final SharedPreferences prefs = await _prefs;
-  return prefs.getString(_storageKeyMobileToken) ?? '';
+  return await prefs.getStringValue(prefs.mobileTokenKey);
 }
 
 Future<bool> setMobileToken(String token) async {
-  final SharedPreferences prefs = await _prefs;
-  return prefs.setString(_storageKeyMobileToken, token);
+  return prefs.setStringValue(prefs.mobileTokenKey, token);
+}
+
+setAccountUserData(int accountId, int userId, String firstName, String lastName,
+    String company) async {
+  await prefs.setIntValue(prefs.accountIdKey, accountId);
+  await prefs.setIntValue(prefs.userIdKey, userId);
+  await prefs.setStringValue(prefs.firstNameKey, firstName);
+  await prefs.setStringValue(prefs.lastNameKey, lastName);
+  await prefs.setStringValue(prefs.companyKey, company);
 }
 
 Future<Map<String, String>> getHeaders() async {
@@ -20,4 +29,12 @@ Future<Map<String, String>> getHeaders() async {
     'Authorization': await _getMobileToken(),
     'Content-Type': 'application/json'
   };
+}
+
+showError(BuildContext context, String errorMsg) {
+  Scaffold.of(context).showSnackBar(
+    SnackBar(
+      content: Text(errorMsg),
+    ),
+  );
 }

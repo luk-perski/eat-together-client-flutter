@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:eat_together/api_client/api_client.dart';
 import 'package:eat_together/main.dart';
 import 'package:eat_together/model/account_data.dart';
 import 'package:eat_together/model/add_account_data.dart';
 import 'package:eat_together/model/model.dart';
+import 'package:eat_together/repository/account_repository.dart';
 import 'package:eat_together/utils/string_consts.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -13,9 +13,13 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPage extends State<RegisterPage> {
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController nameController = new TextEditingController();
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final TextEditingController emailControllerRegister =
+      new TextEditingController();
+  final TextEditingController passwordControllerRegister =
+      new TextEditingController();
+  final TextEditingController firstNameController = new TextEditingController();
+  final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController companyController = new TextEditingController();
   final TextEditingController descriptionController =
       new TextEditingController();
@@ -25,28 +29,27 @@ class _RegisterPage extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: const Text('Register'),
         ),
-        body: Center(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : ListView(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(20.0),
-                    children: <Widget>[
-                      _headerSection(),
-                      _textSection(),
-                      _buttonRegisterSection(),
-                    ],
-                  )
-        )
-    );
+        body:
+            Center(
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(20.0),
+                        children: <Widget>[
+                          _headerSection(),
+                          _textSection(),
+                          _buttonRegisterSection(context),
+                        ],
+                      )));
   }
 
   Container _headerSection() {
     return Container(
-      margin: EdgeInsets.only(top: 50.0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
       child: Text(app_name,
           textAlign: TextAlign.center,
@@ -60,7 +63,7 @@ class _RegisterPage extends State<RegisterPage> {
       child: Column(
         children: <Widget>[
           TextFormField(
-            controller: emailController,
+            controller: emailControllerRegister,
             keyboardType: TextInputType.emailAddress,
             cursorColor: Colors.black,
             decoration: InputDecoration(
@@ -73,7 +76,7 @@ class _RegisterPage extends State<RegisterPage> {
             ),
           ),
           TextFormField(
-            controller: passwordController,
+            controller: passwordControllerRegister,
             cursorColor: Colors.black,
             obscureText: true,
             decoration: InputDecoration(
@@ -92,13 +95,25 @@ class _RegisterPage extends State<RegisterPage> {
           ),
 //          SizedBox(height: 30.0),
           TextFormField(
-            controller: nameController,
+            controller: firstNameController,
             cursorColor: Colors.black,
             decoration: InputDecoration(
               icon: Icon(
                 Icons.account_box,
               ),
-              hintText: "Name",
+              hintText: "First Name",
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70)),
+            ),
+          ),
+          TextFormField(
+            controller: lastNameController,
+            cursorColor: Colors.black,
+            decoration: InputDecoration(
+              icon: Icon(
+                Icons.account_box,
+              ),
+              hintText: "Last Name",
               border: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white70)),
             ),
@@ -134,20 +149,21 @@ class _RegisterPage extends State<RegisterPage> {
     );
   }
 
-  Container _buttonRegisterSection() {
+  Container _buttonRegisterSection(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == ""
+        onPressed: emailControllerRegister.text == "" ||
+                passwordControllerRegister.text == ""
             ? null
             : () {
                 setState(() {
                   _isLoading = true;
                 });
-                _register();
+                _register(context);
               },
         elevation: 0.0,
         color: Theme.of(context).accentColor,
@@ -159,26 +175,30 @@ class _RegisterPage extends State<RegisterPage> {
     );
   }
 
-  _register() async {
+  _register(BuildContext context) async {
     var accountData = AccountData(
-        email: emailController.text, password: passwordController.text);
+        email: emailControllerRegister.text,
+        password: passwordControllerRegister.text);
     var userData = UserData(
-        name: nameController.text,
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
         companyName: companyController.text,
         description: descriptionController.text);
     var data = new AddAccountData(accountData, userData);
-    AccountApiClient().singUp(data).then((value) => {
-          if (value)
-            {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => MainPage()),
-                  (Route<dynamic> route) => false)
-            }
-          else
-            {
-              //todo
-            }
-        });
+    var result = await AccountRepository().signUp(data);
+    setState(() {
+      _isLoading = false;
+    });
+    if (result) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => MainPage()),
+          (Route<dynamic> route) => false);
+    } else {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+          content: Text("Login failed."),
+        ),
+      );
+    }
   }
 }

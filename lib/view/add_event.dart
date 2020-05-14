@@ -1,9 +1,18 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:eat_together/model/event_data.dart';
+import 'package:eat_together/model/model.dart';
+import 'package:eat_together/repository/event_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../utils/prefs_utils.dart' as prefs;
+
 class AddEventPage extends StatefulWidget {
+  final EventData eventData;
+
+  const AddEventPage({Key key, this.eventData}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _AddEventPage();
 }
@@ -60,7 +69,10 @@ class _AddEventPage extends State<AddEventPage> {
         onPressed: placeNameController.text == "" || eventDate == null
             ? null
             : () {
-                Navigator.pop(context);
+                setState(() {
+                  _isLoading = true;
+                });
+                _addEvent();
               },
         color: Theme.of(context).accentColor,
         child: Text(
@@ -138,5 +150,24 @@ class _AddEventPage extends State<AddEventPage> {
             ),
           )
         ]));
+  }
+
+  _addEvent() async {
+    var firstName = await prefs.getStringValue(prefs.firstNameKey);
+    var lastName = await prefs.getStringValue(prefs.lastNameKey);
+    var company = await prefs.getStringValue(prefs.companyKey);
+    var eventData = EventData(
+        date: eventDate,
+        placeName: placeNameController.text,
+        placeLocation: placeLocationController.text,
+        description: descriptionController.text,
+        creatorAccountId: await prefs.getIntValue(prefs.accountIdKey),
+        creatorName: "$firstName $lastName ($company)");
+    if (await EventRepository().addEvent(eventData)) {
+      setState(() {
+        _isLoading = false;
+        Navigator.pop(context);
+      });
+    }
   }
 }

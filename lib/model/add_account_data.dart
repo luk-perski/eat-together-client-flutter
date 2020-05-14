@@ -1,8 +1,7 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:eat_together/model/account_data.dart';
 import 'package:eat_together/model/model.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'AddAccountData.g.dart';
+part 'add_account_data.g.dart';
 
 @JsonSerializable()
 class AddAccountData {

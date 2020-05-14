@@ -9,7 +9,8 @@ part of 'user_data.dart';
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return UserData(
     id: json['id'] as int,
-    name: json['name'] as String,
+    firstName: json['firstName'] as String,
+    lastName: json['lastName'] as String,
     companyName: json['companyName'] as String,
     description: json['description'] as String,
   );
@@ -17,7 +18,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
       'companyName': instance.companyName,
       'description': instance.description,
     };
