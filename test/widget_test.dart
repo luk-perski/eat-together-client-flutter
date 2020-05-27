@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:eat_together/main.dart';
+import 'file:///C:/Studia/mgr_Perski/flutter-nauka/eat-together-client-flutter/lib/view/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

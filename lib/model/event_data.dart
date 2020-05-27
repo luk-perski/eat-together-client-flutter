@@ -4,13 +4,15 @@ part 'event_data.g.dart';
 
 @JsonSerializable()
 class EventData {
-  int id;
+  final int id;
   final int creatorAccountId;
   final DateTime date;
   final String placeName;
   final String placeLocation;
   final String description;
   final String creatorName;
+  final bool callerJoin;
+  final bool callerIsCreator;
 
   EventData(
       {this.id,
@@ -19,7 +21,9 @@ class EventData {
       this.date,
       this.placeName,
       this.placeLocation,
-      this.creatorName});
+      this.creatorName,
+      this.callerJoin,
+      this.callerIsCreator});
 
   factory EventData.fromJson(Map<String, dynamic> json) =>
       _$EventDataFromJson(json);

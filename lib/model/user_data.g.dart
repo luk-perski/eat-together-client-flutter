@@ -13,6 +13,9 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     lastName: json['lastName'] as String,
     companyName: json['companyName'] as String,
     description: json['description'] as String,
+    userLocationLongitude: (json['userLocationLongitude'] as num)?.toDouble(),
+    userLocationLatitude: (json['userLocationLatitude'] as num)?.toDouble(),
+    userLocationAddress: json['userLocationAddress'] as String,
   );
 }
 
@@ -22,4 +25,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'lastName': instance.lastName,
       'companyName': instance.companyName,
       'description': instance.description,
+      'userLocationLongitude': instance.userLocationLongitude,
+      'userLocationLatitude': instance.userLocationLatitude,
+      'userLocationAddress': instance.userLocationAddress,
     };

@@ -1,12 +1,12 @@
 import 'package:eat_together/model/account_data.dart';
 import 'package:eat_together/repository/account_repository.dart';
-import 'package:eat_together/view/register.dart';
+import 'package:eat_together/view/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../main.dart';
-import '../utils/api_utils.dart';
 import '../utils/string_consts.dart';
+import '../utils/widget_utils.dart';
+import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,15 +15,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Login'),
       ),
@@ -52,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == ""
+        onPressed: _emailController.text == "" || _passwordController.text == ""
             ? null
             : () {
                 setState(() {
@@ -78,12 +80,13 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 15.0),
       child: MaterialButton(
         onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-          builder: (BuildContext context) => RegisterPage(),
+          builder: (BuildContext context) => UserPage(
+            isRegister: true,
+          ),
         )),
         child: Text(
           "Don't have an account?",
         ),
-//        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
@@ -94,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: <Widget>[
           TextFormField(
-            controller: emailController,
+            controller: _emailController,
             cursorColor: Colors.black,
             decoration: InputDecoration(
               icon: Icon(
@@ -107,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: 30.0),
           TextFormField(
-            controller: passwordController,
+            controller: _passwordController,
             cursorColor: Colors.black,
             obscureText: true,
             decoration: InputDecoration(
@@ -125,7 +128,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Container headerSection() {
-    //todo add image to header
     return Container(
       margin: EdgeInsets.only(top: 50.0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
@@ -137,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _signIn(BuildContext context) async {
     var accountData = AccountData(
-        email: emailController.text, password: passwordController.text);
+        email: _emailController.text, password: _passwordController.text);
     var result = await AccountRepository().signIn(accountData);
     setState(() {
       _isLoading = false;
@@ -147,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (BuildContext context) => MainPage()),
           (Route<dynamic> route) => false);
     } else {
-      showError(context, "Login failed.");
+      showSnackBar(_scaffoldKey, "Login failed.", 3);
     }
   }
 }

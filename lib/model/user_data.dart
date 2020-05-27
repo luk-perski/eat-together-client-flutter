@@ -9,13 +9,19 @@ class UserData {
   final String lastName;
   final String companyName;
   final String description;
+  final double userLocationLongitude;
+  final double userLocationLatitude;
+  final String userLocationAddress;
 
   UserData(
       {this.id,
       this.firstName,
       this.lastName,
       this.companyName,
-      this.description});
+      this.description,
+      this.userLocationLongitude,
+      this.userLocationLatitude,
+      this.userLocationAddress});
 
   factory UserData.fromJson(Map<String, dynamic> json) =>
       _$UserDataFromJson(json);

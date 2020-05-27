@@ -1,14 +1,15 @@
 import 'package:eat_together/model/event_data.dart';
 import 'package:eat_together/repository/event_repository.dart';
 import 'package:eat_together/utils/string_consts.dart';
-import 'package:eat_together/view/add_event.dart';
+import 'package:eat_together/utils/widget_utils.dart';
+import 'package:eat_together/view/event.dart';
+import 'package:eat_together/view/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'model/event_data.dart';
-import 'view/login.dart';
+import 'login.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,7 +31,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  SharedPreferences sharedPreferences;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  SharedPreferences _sharedPreferences;
 
   @override
   void initState() {
@@ -39,8 +41,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   checkLoginStatus() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("token") == null) {
+    _sharedPreferences = await SharedPreferences.getInstance();
+    if (_sharedPreferences.getString("token") == null) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
           (Route<dynamic> route) => false);
@@ -50,13 +52,19 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(app_name, style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           new IconButton(icon: new Icon(Icons.refresh), onPressed: _refresh),
+          new IconButton(
+              icon: new Icon(Icons.settings),
+              onPressed: () {
+                goToUserScreen(context);
+              }),
           FlatButton(
             onPressed: () {
-              sharedPreferences.clear();
+              _sharedPreferences.clear();
 //              sharedPreferences.commit();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
@@ -80,41 +88,12 @@ class _MainPageState extends State<MainPage> {
           return CircularProgressIndicator();
         },
       )),
-//      body: Center(child: EventListView()),
-      drawer: Drawer(
-        child: new ListView(
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: new Text('TODO'),
-              accountEmail: new Text('todo@todo'),
-              // decoration: new BoxDecoration(
-              //   image: new DecorationImage(
-              //     fit: BoxFit.fill,
-              //    // image: AssetImage('img/xxx.jpg'),
-              //   )
-              // ),
-            ),
-            new Divider(),
-            new ListTile(
-              title: new Text("To do"),
-              trailing: new Icon(Icons.fitness_center),
-              onTap: () => null,
-            ),
-            new Divider(),
-            new ListTile(
-              title: new Text("To do"),
-              trailing: new Icon(Icons.help),
-              onTap: () => null,
-            ),
-          ],
-        ),
-      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context)
               .push(new MaterialPageRoute(
-                  builder: (BuildContext context) => AddEventPage()))
-              .whenComplete(() => _refresh);
+                  builder: (BuildContext context) => EventPage()))
+              .whenComplete(() => _refresh());
         },
         icon: Icon(Icons.add),
         label: Text("Add event"),
@@ -140,30 +119,53 @@ class _MainPageState extends State<MainPage> {
         });
   }
 
-  ListTile _event(String placeName, String creatorName, DateTime date,
+  Card _event(String placeName, String creatorName, DateTime date,
           String format, EventData data) =>
-      ListTile(
-        title: Text("$placeName (${DateFormat(format).format(date)})",
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 20,
-            )),
-        subtitle: Text("Added by $creatorName"),
-        leading: new Container(
-          margin: const EdgeInsets.only(right: 16.0),
-          child: new CircleAvatar(
-              child: new Text(
-                  DateFormat(DateFormat.WEEKDAY).format(date).substring(0, 2))),
-        ),
-        onTap: () => Navigator.of(context)
-            .push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    AddEventPage(eventData: data)))
-            .whenComplete(() => _refresh),
-      );
+      Card(
+          child: ListTile(
+              title: Text("$placeName (${DateFormat(format).format(date)})",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                  )),
+              subtitle: Text("Added by $creatorName"),
+              leading: new Container(
+                margin: const EdgeInsets.only(right: 16.0),
+                child: new CircleAvatar(
+                    child: new Text(DateFormat(DateFormat.WEEKDAY)
+                        .format(date)
+                        .substring(0, 2))),
+              ),
+              onTap: () {
+                goToEventScreen(context, data);
+              }));
+
+  goToEventScreen(BuildContext context, EventData data) async {
+    final response = await Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (BuildContext context) => EventPage(
+                  eventData: data,
+                )));
+    showSnackBar(_scaffoldKey, response, 2);
+    _refresh();
+  }
+
+  goToUserScreen(
+    BuildContext context,
+  ) async {
+    final response = await Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (BuildContext context) => UserPage(
+                  isRegister: false,
+                )));
+  }
 
   Future<List<EventData>> _fetchEvents() async {
-    return await EventRepository().getCurrentEvents();
+    var events = await EventRepository().getCurrentEvents();
+    showSnackBar(_scaffoldKey, "Events updated.");
+    return events;
   }
 
   void _refresh() {
