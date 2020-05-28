@@ -114,31 +114,29 @@ class _MainPageState extends State<MainPage> {
           } else {
             format = DateFormat.MONTH_WEEKDAY_DAY;
           }
-          return _event(data[index].placeName, data[index].creatorName,
-              eventDate, format, data[index]);
+          return _event(format, data[index]);
         });
   }
 
-  Card _event(String placeName, String creatorName, DateTime date,
-          String format, EventData data) =>
-      Card(
-          child: ListTile(
-              title: Text("$placeName (${DateFormat(format).format(date)})",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20,
-                  )),
-              subtitle: Text("Added by $creatorName"),
-              leading: new Container(
-                margin: const EdgeInsets.only(right: 16.0),
-                child: new CircleAvatar(
-                    child: new Text(DateFormat(DateFormat.WEEKDAY)
-                        .format(date)
-                        .substring(0, 2))),
-              ),
-              onTap: () {
-                goToEventScreen(context, data);
-              }));
+  Card _event(String format, EventData data) => Card(
+      child: ListTile(
+          title: Text(
+              "${data.placeName} (${DateFormat(format).format(data.date)})",
+              style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
+                  color: data.callerJoin ? Colors.green : Colors.black)),
+          subtitle: Text("Added by ${data.creatorName}"),
+          leading: new Container(
+            margin: const EdgeInsets.only(right: 16.0),
+            child: new CircleAvatar(
+                child: new Text(DateFormat(DateFormat.WEEKDAY)
+                    .format(data.date)
+                    .substring(0, 2))),
+          ),
+          onTap: () {
+            goToEventScreen(context, data);
+          }));
 
   goToEventScreen(BuildContext context, EventData data) async {
     final response = await Navigator.push(
@@ -147,7 +145,9 @@ class _MainPageState extends State<MainPage> {
             builder: (BuildContext context) => EventPage(
                   eventData: data,
                 )));
-    showSnackBar(_scaffoldKey, response, 2);
+    if (response != null) {
+      showSnackBar(_scaffoldKey, response, 2);
+    }
     _refresh();
   }
 
