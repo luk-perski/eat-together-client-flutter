@@ -34,7 +34,7 @@ dependencies:
   geolocator: ^5.3.1
   address_search_field: 1.0.0 #to trash
   mapbox_search_flutter: any #to trash
-  google_place: ^0.3.1
+  google_place: ^0.3.1 #to trash
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import './prefs_utils.dart' as prefs;
 
-const String urlBase = "http://192.168.1.16:2501";
+const String urlBase = "http://192.168.1.104:2501";
 const String serverApi = "/api/v1/";
 
 Future<String> _getMobileToken() async {

@@ -162,8 +162,9 @@ class _AddEventPage extends State<AddEventPage> {
         placeName: _placeNameController.text,
         placeLocation: _placeLocationController.text,
         description: _descriptionController.text,
-        creatorAccountId: await prefs.getIntValue(prefs.accountIdKey),
-        creatorName: "$firstName $lastName ($company)");
+//        creatorAccountId: await prefs.getIntValue(prefs.accountIdKey), // to chyba już niepotrzebne
+//        creatorName: "$firstName $lastName ($company)"
+    );
     if (await EventRepository().addEvent(eventData)) {
       setState(() {
         _isLoading = false;
