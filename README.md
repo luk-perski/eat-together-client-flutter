@@ -1,7 +1,5 @@
 # eat-together-client-flutter
 
-# eat-together-backend
-
 Flutter app written as part of the diploma thesis "Comparative analysis of the available programming toolkit used in mobile app development". 
 
 ### Tools used:  
