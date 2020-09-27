@@ -12,6 +12,7 @@ class UserData {
   final double userLocationLongitude;
   final double userLocationLatitude;
   final String userLocationAddress;
+  final double distanceRange;
 
   UserData(
       {this.id,
@@ -21,7 +22,8 @@ class UserData {
       this.description,
       this.userLocationLongitude,
       this.userLocationLatitude,
-      this.userLocationAddress});
+      this.userLocationAddress,
+      this.distanceRange});
 
   factory UserData.fromJson(Map<String, dynamic> json) =>
       _$UserDataFromJson(json);

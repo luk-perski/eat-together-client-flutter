@@ -41,6 +41,7 @@ class _EventPage extends State<EventPage> {
       _dateController.text = _format.format(_eventData.date);
       _placeLocationController.text = _eventData.placeLocation;
       _descriptionController.text = _eventData.description;
+      _participantsController.text = _eventData.participants;
       _headerText = "Going to the\n${_eventData.placeName}";
       _appBarText = "Event";
       _callerJoin = _eventData.callerJoin;
@@ -232,13 +233,15 @@ class _EventPage extends State<EventPage> {
 
   _addEvent() async {
     var eventData = EventData(
-      date: _eventDate,
-      placeName: _placeNameController.text,
-      placeLocation: _placeLocationController.text,
-      description: _descriptionController.text,
+        date: DateTime.now(),
+        placeName: _placeNameController.text,
+        placeLocation: _placeLocationController.text,
+        description: _descriptionController.text,
+        locationLongitude: 52.408756,
+        locationLatitude: 16.920957
 //        creatorAccountId: await prefs.getIntValue(prefs.accountIdKey),
 //        creatorName: "$firstName $lastName ($company)")
-    );
+        );
     if (await EventRepository().addEvent(eventData)) {
       setState(() {
         _isLoading = false;

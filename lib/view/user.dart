@@ -4,10 +4,11 @@ import 'package:eat_together/model/model.dart';
 import 'package:eat_together/repository/account_repository.dart';
 import 'package:eat_together/repository/user_repository.dart';
 import 'package:eat_together/utils/string_consts.dart';
-import 'package:eat_together/view/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+
+import 'file:///C:/Dane/aaaStudia/mgr_Perski/flutter-nauka/eat-together-client-flutter/lib/main.dart';
 
 import '../utils/widget_utils.dart';
 
@@ -37,10 +38,11 @@ class _UserPageState extends State<UserPage> {
   UserData _initUserData;
   bool _isLoading = false;
   bool _isRegister;
-  bool _initUpdateButton = false;
-  bool _isLocationFound = false;
+  bool _initUpdateButton = true;
+  bool _isLocationFound = true;
   String _locationName;
   Position _location;
+  double _dropDownValue = 1;
 
   _UserPageState(bool isRegister) {
     _isRegister = isRegister;
@@ -48,6 +50,7 @@ class _UserPageState extends State<UserPage> {
 
   @override
   void initState() {
+    _getAddressFromLatLng();
     if (!_isRegister) {
       _fetchUserData().then(
         (value) => {
@@ -59,7 +62,8 @@ class _UserPageState extends State<UserPage> {
               : "Add description...",
           _locationController.text = value.userLocationAddress,
           _initUserData = value,
-          _initUpdateButton = true
+          _initUpdateButton = true,
+          _dropDownValue = value.distanceRange
         },
 //          onError: () {
 //        //todo
@@ -152,6 +156,40 @@ class _UserPageState extends State<UserPage> {
 //              )
             ],
           ),
+          Row(children: <Widget>[
+            new Padding(
+              padding: new EdgeInsets.only(right: 16),
+              child: Icon(
+                Icons.map,
+                color: Colors.grey,
+              ),
+            ),
+            Expanded(
+              child: DropdownButton<double>(
+                value: _dropDownValue,
+                iconSize: 24,
+                isExpanded: true,
+                elevation: 16,
+                underline: Container(
+                  height: 2,
+                  color: Theme.of(context).accentColor,
+                ),
+                onChanged: (double newValue) {
+                  setState(() {
+                    _dropDownValue = newValue;
+                  });
+                },
+                items: <double>[0.2, 0.5, 1, 1.5, 2, 2.5, 3]
+                    .map<DropdownMenuItem<double>>((double value) {
+                  return DropdownMenuItem<double>(
+                    value: value,
+                    child:
+                        Text("Places distance range: ${value.toString()} km"),
+                  );
+                }).toList(),
+              ),
+            ),
+          ]),
           TextFormField(
             controller: _companyController,
             cursorColor: Colors.black,
@@ -292,10 +330,10 @@ class _UserPageState extends State<UserPage> {
                 _locationName.isNotEmpty)) {
       return () async {
         await UserRepository().updateUser(_getUserData());
-        Navigator.pop(context); //todo add snackbar
+        Navigator.pop(context);
       };
     } else {
-      return null;
+      return null; //todo
     }
   }
 
@@ -305,9 +343,10 @@ class _UserPageState extends State<UserPage> {
         lastName: _lastNameController.text,
         companyName: _companyController.text,
         description: _descriptionController.text,
-        userLocationLatitude: _location.latitude,
-        userLocationLongitude: _location.longitude,
-        userLocationAddress: _locationName);
+        userLocationLatitude: 52.409528,
+        userLocationLongitude: 52.409528,
+        userLocationAddress: _locationName,
+        distanceRange: _dropDownValue);
   }
 
   _getCurrentLocation() {
@@ -323,10 +362,10 @@ class _UserPageState extends State<UserPage> {
 
   _getAddressFromLatLng() async {
     try {
-//      List<Placemark> p = await geolocator.placemarkFromCoordinates(
-//          _currentLocation.latitude, _currentLocation.longitude);
-      List<Placemark> p =
-          await _geolocator.placemarkFromCoordinates(52.409528, 16.912463);
+      List<Placemark> p = await _geolocator.placemarkFromCoordinates(
+          _location.latitude, _location.longitude);
+//      List<Placemark> p =
+//          await _geolocator.placemarkFromCoordinates(52.409528, 16.912463);
       Placemark place = p[0];
       setState(() {
         _locationName =

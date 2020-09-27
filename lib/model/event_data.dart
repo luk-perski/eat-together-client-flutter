@@ -13,6 +13,9 @@ class EventData {
   final String creatorName;
   final bool callerJoin;
   final bool callerIsCreator;
+  final double locationLongitude;
+  final double locationLatitude;
+  final String participants;
 
   EventData(
       {this.id,
@@ -23,7 +26,10 @@ class EventData {
       this.placeLocation,
       this.creatorName,
       this.callerJoin,
-      this.callerIsCreator});
+      this.callerIsCreator,
+      this.locationLongitude,
+      this.locationLatitude,
+      this.participants});
 
   factory EventData.fromJson(Map<String, dynamic> json) =>
       _$EventDataFromJson(json);

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../utils/string_consts.dart';
 import '../utils/widget_utils.dart';
-import 'main.dart';
+import '../main.dart';
 
 class LoginPage extends StatefulWidget {
   @override

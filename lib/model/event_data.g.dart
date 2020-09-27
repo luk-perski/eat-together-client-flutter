@@ -17,6 +17,9 @@ EventData _$EventDataFromJson(Map<String, dynamic> json) {
     creatorName: json['creatorName'] as String,
     callerJoin: json['callerJoin'] as bool,
     callerIsCreator: json['callerIsCreator'] as bool,
+    locationLongitude: json['locationLongitude'] as double,
+    locationLatitude: json['locationLatitude'] as double,
+    participants: json['participants'] as String,
   );
 }
 
@@ -30,4 +33,7 @@ Map<String, dynamic> _$EventDataToJson(EventData instance) => <String, dynamic>{
       'creatorName': instance.creatorName,
       'callerJoin': instance.callerJoin,
       'callerIsCreator': instance.callerIsCreator,
+      'locationLongitude': instance.locationLongitude,
+      'locationLatitude': instance.locationLatitude,
+      'participants': instance.participants
     };

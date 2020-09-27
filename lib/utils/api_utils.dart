@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 import './prefs_utils.dart' as prefs;
 
-const String urlBase = "http://192.168.1.16:2501";
+//const String urlBase = "http://192.168.0.13:2501";
+const String urlBase = "http://192.168.1.14:2501";
 const String serverApi = "/api/v1/";
 
 Future<String> _getMobileToken() async {
@@ -37,4 +40,8 @@ showError(BuildContext context, String errorMsg) {
       content: Text(errorMsg),
     ),
   );
+}
+
+String getUtf8Body(Response response){
+  return  Utf8Decoder().convert(response.bodyBytes);
 }

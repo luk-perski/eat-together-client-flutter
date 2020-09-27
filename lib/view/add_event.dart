@@ -154,16 +154,12 @@ class _AddEventPage extends State<AddEventPage> {
   }
 
   _addEvent() async {
-    var firstName = await prefs.getStringValue(prefs.firstNameKey);
-    var lastName = await prefs.getStringValue(prefs.lastNameKey);
-    var company = await prefs.getStringValue(prefs.companyKey);
     var eventData = EventData(
         date: _eventDate,
         placeName: _placeNameController.text,
         placeLocation: _placeLocationController.text,
         description: _descriptionController.text,
-        creatorAccountId: await prefs.getIntValue(prefs.accountIdKey),
-        creatorName: "$firstName $lastName ($company)");
+    );
     if (await EventRepository().addEvent(eventData)) {
       setState(() {
         _isLoading = false;

@@ -16,6 +16,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     userLocationLongitude: (json['userLocationLongitude'] as num)?.toDouble(),
     userLocationLatitude: (json['userLocationLatitude'] as num)?.toDouble(),
     userLocationAddress: json['userLocationAddress'] as String,
+    distanceRange: (json['distanceRange'] as num)?.toDouble(),
   );
 }
 
@@ -28,4 +29,5 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'userLocationLongitude': instance.userLocationLongitude,
       'userLocationLatitude': instance.userLocationLatitude,
       'userLocationAddress': instance.userLocationAddress,
+      'distanceRange': instance.distanceRange,
     };

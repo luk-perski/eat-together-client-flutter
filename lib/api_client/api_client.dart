@@ -39,7 +39,7 @@ class ApiClient {
         .timeout(const Duration(seconds: 10));
     print(response.body);
     if (response.statusCode == HttpStatus.ok) {
-      return json.decode(response.body);
+      return json.decode(apiUtils.getUtf8Body(response));
     }
     throw Exception('Failed to load jobs from API');
   }
