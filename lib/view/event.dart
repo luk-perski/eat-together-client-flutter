@@ -233,7 +233,7 @@ class _EventPage extends State<EventPage> {
 
   _addEvent() async {
     var eventData = EventData(
-        date: DateTime.now(),
+        date: _eventDate,
         placeName: _placeNameController.text,
         placeLocation: _placeLocationController.text,
         description: _descriptionController.text,
