@@ -19,7 +19,6 @@ class AddEventPage extends StatefulWidget {
 
 class _AddEventPage extends State<AddEventPage> {
   bool _isLoading = false;
-  final TextEditingController _dateController = new TextEditingController();
   final TextEditingController _placeNameController =
       new TextEditingController();
   final TextEditingController _placeLocationController =
